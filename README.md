@@ -1,5 +1,15 @@
 <div align="center">
 
+<a href="./showcase.html">
+<img src="https://img.shields.io/badge/%E2%9C%A8%20Live%20Showcase-2563EB?style=for-the-badge&logoColor=white" height="36"/>
+</a>
+
+</div>
+
+<br/>
+
+<div align="center">
+
 <img src="https://capsule-render.vercel.app/api?type=slice&color=0:1D4ED8,40:2563EB,80:0891B2,100:06B6D4&height=250&section=header&text=Library%20System&fontSize=72&fontColor=fff&fontAlignY=50&desc=Python%20%E2%80%A2%20Flask%20%E2%80%A2%20SQLite%20%E2%80%A2%20Jinja2&descSize=20&descAlignY=72&descFontColor=BAE6FD&animation=blinking&reversal=true" width="100%"/>
 
 </div>

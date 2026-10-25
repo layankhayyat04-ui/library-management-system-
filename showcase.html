@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Library System — Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<style>
+  :root {
+    --p: #2563EB;
+    --p2: #3B82F6;
+    --p3: #60A5FA;
+    --acc: #06B6D4;
+    --acc2: #22D3EE;
+    --bg: #020817;
+    --bg2: #0A1628;
+    --bg3: #0F2040;
+    --txt: #F0F9FF;
+    --txt2: #93C5FD;
+    --success: #10B981;
+    --warn: #F59E0B;
+    --danger: #EF4444;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* CANVAS */
+  #cv { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.35; }
+
+  section { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    background: radial-gradient(ellipse 80% 55% at 50% 0%, rgba(37,99,235,0.2) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(6,182,212,0.12) 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.4);
+    border-radius: 100px; padding: 6px 16px; font-size: 12px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--p3); margin-bottom: 28px;
+    opacity: 0;
+  }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acc); animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+  .hero-title {
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    margin-bottom: 6px;
+    opacity: 0;
+  }
+  .hero-title span {
+    background: linear-gradient(135deg, #fff 0%, var(--p3) 40%, var(--acc2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--txt2);
+    max-width: 560px;
+    margin-bottom: 36px;
+    opacity: 0;
+  }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; opacity: 0; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; border-radius: 12px; font-weight: 600; font-size: 15px;
+    text-decoration: none; transition: transform .2s, box-shadow .2s; cursor: pointer; border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--p), var(--acc));
+    color: #fff; box-shadow: 0 8px 24px rgba(37,99,235,.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(37,99,235,.5); }
+  .btn-ghost {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: var(--txt2);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,.1); }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+    border-top: 1px solid rgba(255,255,255,.06);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    background: rgba(255,255,255,.02);
+    padding: 40px 24px;
+  }
+  .stat-item {
+    flex: 1; min-width: 160px; max-width: 240px;
+    text-align: center; padding: 20px 24px;
+    border-right: 1px solid rgba(255,255,255,.06);
+    opacity: 0;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-size: 2.8rem; font-weight: 900; letter-spacing: -.04em;
+    background: linear-gradient(135deg, var(--p3), var(--acc2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    display: block; line-height: 1;
+  }
+  .stat-label { font-size: 13px; color: var(--txt2); margin-top: 6px; letter-spacing: .05em; text-transform: uppercase; }
+
+  /* ── MOCKUP ── */
+  .mockup-section {
+    padding: 100px 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 60px;
+  }
+  .section-label {
+    font-size: 12px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--acc); margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800;
+    letter-spacing: -.02em; text-align: center;
+  }
+  .section-title em { font-style: normal; color: var(--p3); }
+  .mockup-wrap {
+    width: 100%; max-width: 900px;
+    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+    border-radius: 20px; overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,.5);
+    opacity: 0; transform: translateY(40px);
+  }
+  .browser-bar {
+    background: rgba(255,255,255,.05); padding: 12px 20px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  .dots { display: flex; gap: 6px; }
+  .dots span { width: 12px; height: 12px; border-radius: 50%; }
+  .dots span:nth-child(1) { background: #FF5F57; }
+  .dots span:nth-child(2) { background: #FEBC2E; }
+  .dots span:nth-child(3) { background: #28C840; }
+  .url-bar {
+    flex: 1; background: rgba(255,255,255,.06); border-radius: 6px;
+    padding: 5px 12px; font-size: 12px; color: var(--txt2); font-family: 'JetBrains Mono', monospace;
+  }
+  .app-ui {
+    padding: 24px; display: flex; flex-direction: column; gap: 16px;
+  }
+  /* App header */
+  .app-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,.07);
+  }
+  .app-title-ui { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+  .app-title-ui span { color: var(--p3); }
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px; padding: 8px 14px; font-size: 13px; color: var(--txt2);
+  }
+  /* Stats row in app */
+  .stat-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .tile {
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+    border-radius: 12px; padding: 16px; text-align: center;
+  }
+  .tile-num { font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; }
+  .tile-num.blue { color: var(--p3); }
+  .tile-num.green { color: var(--success); }
+  .tile-num.yellow { color: var(--warn); }
+  .tile-num.red { color: var(--danger); }
+  .tile-lbl { font-size: 11px; color: var(--txt2); margin-top: 4px; }
+  /* Book cards */
+  .book-row { display: flex; flex-direction: column; gap: 8px; }
+  .book-card {
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+    border-radius: 10px; padding: 12px 16px;
+    transition: background .2s;
+  }
+  .book-icon {
+    width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .book-info { flex: 1; }
+  .book-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .book-author { font-size: 11px; color: var(--txt2); }
+  .avail-badge {
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px;
+  }
+  .avail-green { background: rgba(16,185,129,.15); color: #34D399; }
+  .avail-yellow { background: rgba(245,158,11,.15); color: #FCD34D; }
+  .avail-red { background: rgba(239,68,68,.12); color: #F87171; }
+
+  /* ── FEATURES ── */
+  .features { padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 56px; }
+  .feat-card {
+    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px; padding: 28px;
+    opacity: 0; transform: translateY(30px);
+    transition: border-color .3s, transform .3s;
+  }
+  .feat-card:hover { border-color: rgba(37,99,235,.4); transform: translateY(-4px) !important; }
+  .feat-icon {
+    width: 48px; height: 48px; border-radius: 12px; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    background: rgba(37,99,235,.15); border: 1px solid rgba(37,99,235,.25);
+  }
+  .feat-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .feat-desc { font-size: 14px; color: var(--txt2); line-height: 1.6; }
+
+  /* ── CODE BLOCK ── */
+  .code-section { padding: 80px 24px; max-width: 800px; margin: 0 auto; }
+  .code-block {
+    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px; overflow: hidden;
+    opacity: 0; transform: translateY(30px);
+  }
+  .code-header {
+    background: rgba(255,255,255,.05); padding: 12px 20px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.15); }
+  .code-lang { font-size: 11px; color: var(--txt2); font-family: 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
+  pre {
+    padding: 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    line-height: 1.8; overflow-x: auto; color: #CBD5E1;
+  }
+  .kw { color: #7C3AED; } .fn { color: #38BDF8; } .str { color: #34D399; }
+  .cm { color: #475569; font-style: italic; } .num { color: #FB923C; }
+
+  /* ── TECH STACK ── */
+  .tech-section { padding: 80px 24px; text-align: center; }
+  .tech-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 40px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 100px; padding: 8px 18px; font-size: 13px; font-weight: 500;
+    opacity: 0; transform: scale(.8);
+  }
+  .chip-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 24px; text-align: center;
+    border-top: 1px solid rgba(255,255,255,.06);
+    color: var(--txt2); font-size: 14px;
+  }
+  footer a { color: var(--p3); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-name { font-size: 20px; font-weight: 700; color: var(--txt); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Library Management System</div>
+  <h1 class="hero-title"><span>Full-Stack Book</span><br>Catalog & Checkout</h1>
+  <p class="hero-sub">Python · Flask · SQLite — one command away from a fully-seeded library database with live availability, search, and borrower tracking.</p>
+  <div class="cta-row">
+    <a href="https://github.com/layankhayyat04-ui/library-management-system-" class="btn btn-primary">⭐ View on GitHub</a>
+    <a href="#features" class="btn btn-ghost">Explore Features</a>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item"><span class="stat-num">1</span><span class="stat-label">Command to Run</span></div>
+  <div class="stat-item"><span class="stat-num">8</span><span class="stat-label">Seeded Books</span></div>
+  <div class="stat-item"><span class="stat-num">60s</span><span class="stat-label">Setup Time</span></div>
+  <div class="stat-item"><span class="stat-num">0</span><span class="stat-label">Config Files</span></div>
+</div>
+
+<!-- MOCKUP -->
+<section class="mockup-section">
+  <div>
+    <p class="section-label">Live Interface</p>
+    <h2 class="section-title">Clean <em>dashboard</em> from day one</h2>
+  </div>
+  <div class="mockup-wrap" id="mockup">
+    <div class="browser-bar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="url-bar">localhost:5000</div>
+    </div>
+    <div class="app-ui">
+      <div class="app-header">
+        <div class="app-title-ui">📚 <span>Library</span> System</div>
+        <div class="search-bar">🔍 Search title or author...</div>
+      </div>
+      <div class="stat-tiles">
+        <div class="tile"><div class="tile-num blue">8</div><div class="tile-lbl">Total Books</div></div>
+        <div class="tile"><div class="tile-num green">5</div><div class="tile-lbl">Available</div></div>
+        <div class="tile"><div class="tile-num yellow">3</div><div class="tile-lbl">Checked Out</div></div>
+        <div class="tile"><div class="tile-num red">2</div><div class="tile-lbl">Borrowers</div></div>
+      </div>
+      <div class="book-row">
+        <div class="book-card">
+          <div class="book-icon" style="background:rgba(37,99,235,.15)">📖</div>
+          <div class="book-info">
+            <div class="book-name">Clean Code</div>
+            <div class="book-author">Robert C. Martin · Technology</div>
+          </div>
+          <span class="avail-badge avail-green">3 / 3 available</span>
+        </div>
+        <div class="book-card">
+          <div class="book-icon" style="background:rgba(245,158,11,.15)">📗</div>
+          <div class="book-info">
+            <div class="book-name">Atomic Habits</div>
+            <div class="book-author">James Clear · Self-Help</div>
+          </div>
+          <span class="avail-badge avail-yellow">1 / 3 left</span>
+        </div>
+        <div class="book-card">
+          <div class="book-icon" style="background:rgba(239,68,68,.15)">📕</div>
+          <div class="book-info">
+            <div class="book-name">Designing Data-Intensive Applications</div>
+            <div class="book-author">Martin Kleppmann · Technology</div>
+          </div>
+          <span class="avail-badge avail-red">Out of stock</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div style="text-align:center;">
+    <p class="section-label">Core Features</p>
+    <h2 class="section-title">Everything a library needs,<br><em>nothing it doesn't</em></h2>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card fc">
+      <div class="feat-icon">🔍</div>
+      <h3 class="feat-title">Stacked Search & Filter</h3>
+      <p class="feat-desc">Full-text LIKE search across title and author. Category dropdown stacks on top — search "Data" in "Technology" narrows precisely.</p>
+    </div>
+    <div class="feat-card fc">
+      <div class="feat-icon">📤</div>
+      <h3 class="feat-title">Atomic Checkout</h3>
+      <p class="feat-desc">On submit: available_copies decremented and checkout record inserted atomically. Borrower name validation. Flash message on success.</p>
+    </div>
+    <div class="feat-card fc">
+      <div class="feat-icon">↩️</div>
+      <h3 class="feat-title">Smart Returns</h3>
+      <p class="feat-desc">No manual record hunting. Finds the oldest unreturned checkout for that book and closes it atomically — one click, done.</p>
+    </div>
+    <div class="feat-card fc">
+      <div class="feat-icon">🟢</div>
+      <h3 class="feat-title">Live Availability Badges</h3>
+      <p class="feat-desc">Green for full stock · Amber for low · Red for out of stock. Recalculates on every request — always accurate, no refresh needed.</p>
+    </div>
+    <div class="feat-card fc">
+      <div class="feat-icon">📊</div>
+      <h3 class="feat-title">Real-Time Dashboard</h3>
+      <p class="feat-desc">Four stat tiles: Total Books, Available, Checked Out, Active Borrowers. Derived fresh from SQLite on every page load.</p>
+    </div>
+    <div class="feat-card fc">
+      <div class="feat-icon">🌱</div>
+      <h3 class="feat-title">Auto-Seeded Database</h3>
+      <p class="feat-desc">SQLite created and seeded with 8 curated books on first launch. Zero manual setup — open browser, start cataloguing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CODE BLOCK -->
+<section class="code-section">
+  <div class="code-block" id="codeblock">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-lang">Python · app.py</span>
+    </div>
+<pre><span class="cm"># Smart return — closes oldest open checkout</span>
+<span class="kw">@app</span>.route(<span class="str">'/return/&lt;int:book_id&gt;'</span>, methods=[<span class="str">'POST'</span>])
+<span class="kw">def</span> <span class="fn">return_book</span>(book_id):
+    db  = get_db()
+    row = db.execute(
+        <span class="str">'SELECT id FROM checkouts WHERE book_id = ? AND returned = 0'</span>
+        <span class="str">' ORDER BY checkout_date ASC LIMIT 1'</span>,
+        (book_id,)
+    ).fetchone()
+    <span class="kw">if</span> row:
+        db.execute(<span class="str">'UPDATE checkouts SET returned = 1 WHERE id = ?'</span>,
+                   (row[<span class="str">'id'</span>],))
+        db.execute(<span class="str">'UPDATE books SET available_copies = available_copies + 1'</span>
+                   <span class="str">' WHERE id = ?'</span>, (book_id,))
+        db.commit()
+        flash(<span class="str">'Book returned successfully!'</span>, <span class="str">'success'</span>)
+    <span class="kw">return</span> redirect(url_for(<span class="str">'index'</span>))</pre>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="tech-section">
+  <p class="section-label">Stack</p>
+  <h2 class="section-title">Built with the<br><em>right tools</em></h2>
+  <div class="tech-chips">
+    <span class="chip tc"><span class="chip-dot" style="background:#3B82F6"></span>Python 3</span>
+    <span class="chip tc"><span class="chip-dot" style="background:#22C55E"></span>Flask 3.0</span>
+    <span class="chip tc"><span class="chip-dot" style="background:#06B6D4"></span>SQLite</span>
+    <span class="chip tc"><span class="chip-dot" style="background:#F59E0B"></span>Jinja2</span>
+    <span class="chip tc"><span class="chip-dot" style="background:#EC4899"></span>CSS3</span>
+    <span class="chip tc"><span class="chip-dot" style="background:#8B5CF6"></span>Zero Dependencies</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">Layan Khayyat</div>
+  <p>Built with Python &amp; Flask · No cloud · No config · Just <code>python app.py</code></p>
+  <br>
+  <p>
+    <a href="https://layankhayyat.com">🌐 Portfolio</a> &nbsp;·&nbsp;
+    <a href="https://github.com/layankhayyat04-ui">GitHub</a> &nbsp;·&nbsp;
+    <a href="https://linkedin.com/in/layankhayyat">LinkedIn</a>
+  </p>
+</footer>
+
+<script>
+// ── PARTICLE CANVAS ──
+const canvas = document.getElementById('cv');
+const ctx = canvas.getContext('2d');
+let W, H, pts = [];
+
+function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+window.addEventListener('resize', resize);
+resize();
+
+function rnd(min,max){ return Math.random()*(max-min)+min; }
+for(let i=0;i<70;i++){
+  pts.push({
+    x: rnd(0,W), y: rnd(0,H),
+    vx: rnd(-0.4,0.4), vy: rnd(-0.4,0.4),
+    r: rnd(1,2.5),
+    c: Math.random() > 0.5 ? '37,99,235' : '6,182,212'
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<pts.length;i++){
+    const a = pts[i];
+    a.x += a.vx; a.y += a.vy;
+    if(a.x<0||a.x>W) a.vx*=-1;
+    if(a.y<0||a.y>H) a.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(a.x,a.y,a.r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(${a.c},0.7)`;
+    ctx.fill();
+    for(let j=i+1;j<pts.length;j++){
+      const b=pts[j], d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<120){
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=`rgba(37,99,235,${(1-d/120)*0.25})`;
+        ctx.lineWidth=0.5; ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ── ANIME ENTRANCE ──
+const tl = anime.timeline({ easing: 'easeOutExpo' });
+tl.add({ targets: '.hero-badge', opacity:[0,1], translateY:[15,0], duration:700 })
+  .add({ targets: '.hero-title', opacity:[0,1], translateY:[35,0], duration:900 }, '-=400')
+  .add({ targets: '.hero-sub',  opacity:[0,1], translateY:[25,0], duration:700 }, '-=500')
+  .add({ targets: '.cta-row',   opacity:[0,1], translateY:[20,0], duration:600 }, '-=400')
+  .add({ targets: '.stat-item', opacity:[0,1], translateY:[20,0], duration:600, delay: anime.stagger(80) }, '-=200');
+
+// ── SCROLL REVEALS ──
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    if(el.id === 'mockup' || el.id === 'codeblock'){
+      anime({ targets: el, opacity:[0,1], translateY:[40,0], duration:900, easing:'easeOutExpo' });
+    } else if(el.classList.contains('fc')){
+      anime({ targets: el, opacity:[0,1], translateY:[30,0], duration:700, easing:'easeOutExpo' });
+    } else if(el.classList.contains('tc')){
+      anime({ targets: el, opacity:[0,1], scale:[0.8,1], duration:500, easing:'easeOutBack' });
+    }
+    io.unobserve(el);
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.feat-card, #mockup, #codeblock, .chip').forEach(el => {
+  io.observe(el);
+});
+</script>
+</body>
+</html>
