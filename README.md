@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="./showcase.html">
-<img src="https://img.shields.io/badge/%E2%9C%A8%20Live%20Showcase-2563EB?style=for-the-badge&logoColor=white" height="36"/>
+<img src="https://img.shields.io/badge/%E2%9C%A8%20Live%20Showcase-2563EB?style=for-the-badge&logoColor=black" height="36"/>
 </a>
 
 </div>
