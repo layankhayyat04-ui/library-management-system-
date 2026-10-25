@@ -2,17 +2,22 @@
 
 <br/>
 
-# Library Management System
-
-**A full-stack web app for book tracking — browse, search, check out, return**
-
-Replaces spreadsheet-based library tracking with a single, always-up-to-date digital record. Built end-to-end with Python: Flask handles the web server, SQLite stores the data permanently.
+<img src="https://capsule-render.vercel.app/api?type=waving&color=2563EB&height=200&section=header&text=Library%20Management%20System&fontSize=36&fontColor=ffffff&fontAlignY=38&desc=Flask%20%2B%20SQLite%20Web%20Application&descAlignY=58&descSize=18&animation=fadeIn" width="100%"/>
 
 <br/>
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white"/>
+  <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Jinja2-B41717?style=for-the-badge&logo=jinja&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Status-Complete-059669?style=for-the-badge"/>
+</p>
+
+<p align="center">
+  <strong>Browse · Search · Check Out · Return</strong><br/>
+  Replaces spreadsheet-based library tracking with one always-up-to-date web app.
+</p>
 
 <br/>
 
@@ -20,94 +25,188 @@ Replaces spreadsheet-based library tracking with a single, always-up-to-date dig
 
 ---
 
-## Overview
+## ✨ Overview
 
-The Library Management System is a working web application that replaces manual, spreadsheet-based tracking of a book collection with a single, always-up-to-date digital record.
+A working full-stack web application that replaces manual, spreadsheet-based book tracking with a single digital record — browsable in any browser, with no extra services or databases to set up.
 
-It keeps track of every book's total and available copies, records who has borrowed what, and lets staff search and filter the collection instantly — instead of scrolling through a spreadsheet.
+```
+One Python file. One SQLite file. Run and go.
+```
 
-Nothing is lost when the server restarts: SQLite stores the entire database in one file with no separate server needed.
+Everything persists across restarts. No setup beyond `pip install flask && python app.py`.
 
 ---
 
-## Features
+## 🖥️ Features
 
-### 📊 At-a-Glance Dashboard
+### 📊 Live Dashboard — 4 counters, always current
 
-The home screen opens with four live counters:
-
-- **Total copies** across the whole collection
-- **Available now** — how many can be checked out right now
-- **Checked out** — currently borrowed
-- **Active borrowers** — how many people currently have something
+| Counter | What it shows |
+|---|---|
+| Total Books | Every book in the catalog |
+| Available | Copies that can be checked out right now |
+| Checked Out | Copies currently with borrowers |
+| Active Borrowers | People who have at least one book |
 
 ### 🔍 Instant Search
 
-Typing into the search bar filters the book list in real time by **title or author**. Searching "Data" narrows 8 books down to the 2 matching titles — live, as you type.
+Filters the catalog in real time by **title or author** as you type. Searching `"Data"` narrows 8 books to the 2 matching titles — no page reload.
 
-### 🏷️ Category Filtering
+### 🏷️ Category Dropdown
 
-Books are grouped by category. The dropdown filters the whole list to just that group — useful for browsing by subject rather than searching a specific title.
+Filter the full catalog by subject group — useful when browsing a collection rather than searching for a specific title.
 
 ### ✅ Check Out a Book
 
-Every book with at least one available copy shows a "Check Out" action with a borrower name field. Submitting it:
+Any book with available copies shows a borrower name field + **Check Out** button. On submit:
+- Available count decreases by 1
+- Checkout is recorded in the database with today's date
 
-- Immediately reduces that book's available count by one
-- Records the checkout with today's date in the database
+### ↩️ Mark Returned
 
-### ↩️ Return a Book
+When a book has 0 available copies, its action column shows **Mark Returned**. On click:
+- The oldest open checkout record is closed
+- Available count increases by 1
 
-When a book has zero available copies, its action column swaps to a **"Mark Returned"** button. Clicking it:
-
-- Closes out that book's oldest active checkout record
-- Adds one copy back to the available count
-
-### 🎨 Live Status Badges
-
-The catalog uses color-coded availability badges:
+### 🎨 Color-Coded Status Badges
 
 | Badge | Meaning |
 |---|---|
-| 🟢 Green | Well-stocked — several copies available |
-| 🟡 Amber | Low copies — only one left |
-| 🔴 Red/Teal | Fully checked out — shows Mark Returned |
+| 🟢 Green | Several copies available |
+| 🟡 Amber | Only 1 copy left |
+| 🔴 Red | Fully checked out |
 
 ---
 
-## Tech Stack
+## 🚀 Getting Started
 
-| Layer | Technology |
-|---|---|
-| Backend | Python · Flask |
-| Database | SQLite |
-| Templating | Jinja2 |
-| Frontend | HTML · CSS |
+```bash
+# Clone
+git clone https://github.com/layankhayyat04-ui/library-management-system-.git
+cd library-management-system-
 
-**Why Flask & SQLite?** Flask lets the whole system run as a single small Python app with no external services required. SQLite needs no separate database server — the entire database lives in one file, making setup simple.
+# Install
+pip install -r requirements.txt
+
+# Run
+python app.py
+```
+
+Open [http://localhost:5000](http://localhost:5000) — the database seeds itself on first launch with 8 sample books.
 
 ---
 
-## What's Next
+## 🧩 Key Code
+
+### Database Initialization with Seed Data
+
+```python
+def init_db():
+    with get_db() as db:
+        db.executescript('''
+            CREATE TABLE IF NOT EXISTS books (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                author TEXT NOT NULL,
+                category TEXT NOT NULL,
+                total_copies INTEGER NOT NULL DEFAULT 1,
+                available_copies INTEGER NOT NULL DEFAULT 1
+            );
+
+            CREATE TABLE IF NOT EXISTS checkouts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                book_id INTEGER NOT NULL,
+                borrower_name TEXT NOT NULL,
+                checkout_date TEXT NOT NULL,
+                returned INTEGER NOT NULL DEFAULT 0,
+                FOREIGN KEY (book_id) REFERENCES books(id)
+            );
+        ''')
+```
+
+### Live Search with Dynamic SQL
+
+```python
+@app.route('/')
+def index():
+    search = request.args.get('search', '').strip()
+    category = request.args.get('category', '').strip()
+
+    query = 'SELECT * FROM books WHERE 1=1'
+    params = []
+
+    if search:
+        query += ' AND (LOWER(title) LIKE ? OR LOWER(author) LIKE ?)'
+        params += [f'%{search.lower()}%', f'%{search.lower()}%']
+
+    if category:
+        query += ' AND category = ?'
+        params.append(category)
+
+    books = db.execute(query, params).fetchall()
+```
+
+### Check Out a Book (atomic update)
+
+```python
+@app.route('/checkout/<int:book_id>', methods=['POST'])
+def checkout(book_id):
+    db = get_db()
+    db.execute(
+        'UPDATE books SET available_copies = available_copies - 1 WHERE id = ?',
+        (book_id,)
+    )
+    db.execute(
+        'INSERT INTO checkouts (book_id, borrower_name, checkout_date) VALUES (?, ?, ?)',
+        (book_id, borrower, date.today().isoformat())
+    )
+    db.commit()
+```
+
+---
+
+## 🗂️ Project Structure
+
+```
+library-management-system/
+├── app.py                # Flask app — routes, DB logic, seed data
+├── requirements.txt      # flask>=3.0.0
+├── library.db            # SQLite — auto-created on first run
+├── templates/
+│   └── index.html        # Jinja2 template — full UI
+└── static/
+    └── css/
+        └── style.css     # Responsive styles, badge system
+```
+
+---
+
+## 🗺️ What's Next
 
 | Feature | Description |
 |---|---|
-| Accounts & Login | So only authorized staff can check books in and out |
-| Due Dates & Overdue Alerts | Track when a book is due back; flag it visually when late |
-| Email Reminders | Automatic notices before a book is due, and when overdue |
-| Export to Excel | One-click export of the full catalog or checkout history |
+| Accounts & Login | Staff-only access with Flask-Login |
+| Due Dates & Overdue Alerts | Track return deadlines, flag late books |
+| Email Reminders | Auto-notify borrowers before due date |
+| Export to Excel | One-click catalog + checkout history |
+| REST API | JSON endpoints for mobile/frontend integration |
 
 ---
 
-## Project Status
+<div align="center">
 
-This is a **real, working application** — every screenshot in the walkthrough shows the live running system, not a mockup. The core loop (browse, search, check out, return) is fully functional.
+<br/>
 
----
-
-## About
-
-Built by **Layan Khayyat**
+**Built by [Layan Khayyat](https://layankhayyat.com)**<br/>
 B.Sc. Business Information Technology · Princess Sumaya University for Technology (PSUT)
 
-[Portfolio](https://layankhayyat.com) · [LinkedIn](https://linkedin.com/in/layankhayyat)
+<br/>
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-layankhayyat.com-2563EB?style=for-the-badge&logo=vercel&logoColor=white)](https://layankhayyat.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/layankhayyat)
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0891B2&height=100&section=footer" width="100%"/>
+
+</div>

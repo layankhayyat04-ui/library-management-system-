@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Library Management System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">📚 LibraryMS</div>
+    <p class="tagline">Manage your collection, effortlessly.</p>
+  </div>
+</header>
+
+<!-- Stats Dashboard -->
+<section class="stats">
+  <div class="stat-card">
+    <span class="stat-icon">📦</span>
+    <div class="stat-value">{{ stats.total }}</div>
+    <div class="stat-label">Total Books</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">✅</span>
+    <div class="stat-value">{{ stats.available }}</div>
+    <div class="stat-label">Available</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">📤</span>
+    <div class="stat-value">{{ stats.checked_out }}</div>
+    <div class="stat-label">Checked Out</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">👤</span>
+    <div class="stat-value">{{ stats.borrowers }}</div>
+    <div class="stat-label">Active Borrowers</div>
+  </div>
+</section>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- Search & Filter -->
+<section class="controls">
+  <form method="get" action="/" class="search-form">
+    <input type="text" name="search" placeholder="Search by title or author…" value="{{ search }}"/>
+    <select name="category">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>{{ cat }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Search</button>
+    {% if search or category %}
+      <a href="/" class="clear-btn">Clear</a>
+    {% endif %}
+  </form>
+</section>
+
+<!-- Book Catalog -->
+<section class="catalog">
+  {% if books %}
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Category</th>
+          <th>Availability</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for book in books %}
+        <tr>
+          <td class="book-title">{{ book.title }}</td>
+          <td>{{ book.author }}</td>
+          <td><span class="category-tag">{{ book.category }}</span></td>
+          <td>
+            {% if book.available_copies == 0 %}
+              <span class="badge badge-out">Out of stock</span>
+            {% elif book.available_copies == 1 %}
+              <span class="badge badge-low">{{ book.available_copies }} / {{ book.total_copies }} left</span>
+            {% else %}
+              <span class="badge badge-good">{{ book.available_copies }} / {{ book.total_copies }} available</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if book.available_copies > 0 %}
+              <form method="post" action="/checkout/{{ book.id }}" class="inline-form">
+                <input type="text" name="borrower_name" placeholder="Borrower name" required/>
+                <button type="submit" class="btn btn-checkout">Check Out</button>
+              </form>
+            {% else %}
+              <form method="post" action="/return/{{ book.id }}" class="inline-form">
+                <button type="submit" class="btn btn-return">Mark Returned</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <span>📭</span>
+      <p>No books found matching your search.</p>
+      <a href="/">View all books</a>
+    </div>
+  {% endif %}
+</section>
+
+</body>
+</html>
