@@ -10,7 +10,7 @@
 
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=slice&color=0:1D4ED8,40:2563EB,80:0891B2,100:06B6D4&height=250&section=header&text=Library%20System&fontSize=72&fontColor=fff&fontAlignY=50&desc=Python%20%E2%80%A2%20Flask%20%E2%80%A2%20SQLite%20%E2%80%A2%20Jinja2&descSize=20&descAlignY=72&descFontColor=BAE6FD&animation=blinking&reversal=true" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1D4ED8,40:2563EB,80:0891B2,100:06B6D4&height=250&section=header&text=Library%20System&fontSize=72&fontColor=fff&fontAlignY=45&desc=Python%20%E2%80%A2%20Flask%20%E2%80%A2%20SQLite%20%E2%80%A2%20Jinja2&descSize=20&descAlignY=65&descFontColor=BAE6FD&animation=blinking" width="100%"/>
 
 </div>
 
